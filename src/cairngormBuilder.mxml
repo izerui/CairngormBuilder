@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" applicationComplete="init()" 
+					   width="550" height="600" status="cairngorm生成器 by 刘玉华" backgroundColor="#005270" xmlns:code="http://code.google.com/p/flexlib/">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.utils.StringUtil;
+			
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import vo.CairngormParamVo;
+			
+			[Bindable]
+			public var cup:CairngormParamVo;
+			
+			
+			protected function openFloder(event:MouseEvent):void
+			{
+				var file:File = new File();
+				file.browseForDirectory("请选择保存目录");
+				file.addEventListener(Event.SELECT,writeFile);
+			}
+			private function writeFile(event:Event):void{
+				var file:File = event.currentTarget as File;
+				writeDelegate(file);
+				writeCommond(file);
+				writeEvent(file);
+//				writeMedel(file);
+			}
+			private function writeDelegate(floderFile:File):void{
+				var file:File = floderFile.resolvePath("business"+File.separator+cup.classname+"Delegate.as");
+				var fs:FileStream = new FileStream();
+				fs.open(file,FileMode.WRITE);
+				fs.writeUTFBytes(cup.delegateText);
+				fs.close();
+			}
+			private function writeCommond(floderFile:File):void{
+				var file:File = floderFile.resolvePath("commond"+File.separator+cup.classname+"Commond.as");
+				var fs:FileStream = new FileStream();
+				fs.open(file,FileMode.WRITE);
+				fs.writeUTFBytes(cup.commondText);
+				fs.close();
+			}
+			private function writeEvent(floderFile:File):void{
+				var file:File = floderFile.resolvePath("event"+File.separator+cup.classname+"Event.as");
+				var fs:FileStream = new FileStream();
+				fs.open(file,FileMode.WRITE);
+				fs.writeUTFBytes(cup.eventText);
+				fs.close();
+			}
+//			private function writeMedel(floderFile:File):void{
+//				var file:File = floderFile.resolvePath("model"+File.separator+cup.classname+"Modellocator.as");
+//				var fs:FileStream = new FileStream();
+//				fs.open(file,FileMode.WRITE);
+//				fs.writeUTFBytes(cup.modellocatorText);
+//				fs.close();
+//			}
+
+			protected function init():void
+			{
+				var caiTitleWin:CTitleWindow = CTitleWindow(PopUpManager.createPopUp(this, CTitleWindow, true)); 
+				PopUpManager.centerPopUp(caiTitleWin);
+			}
+
+
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:ButtonBar id="buttonBar"  dataProvider="{tab}" buttonHeight="30" />
+	<mx:HRule width="100%"/>
+	<mx:ViewStack id="tab" width="100%" height="100%">
+		<s:NavigatorContent label="Delegate" width="100%" height="100%">
+			<s:TextArea horizontalCenter="0" verticalCenter="0" id="delegate" editable="false" width="95%" height="95%" contentBackgroundColor="#8EE0AB" text="{cup.delegateText}"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent label="Commond" width="100%" height="100%">
+			<s:TextArea horizontalCenter="0" verticalCenter="0" id="commond" editable="false" width="95%" height="95%" contentBackgroundColor="#8EE0AB" text="{cup.commondText}"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent label="Event" width="100%" height="100%">
+			<s:TextArea horizontalCenter="0" verticalCenter="0" id="event" editable="false" width="95%" height="95%" contentBackgroundColor="#8EE0AB" text="{cup.eventText}"/>
+		</s:NavigatorContent>
+		<!--<s:NavigatorContent label="Modellocator" width="100%" height="100%">
+			<s:TextArea horizontalCenter="0" verticalCenter="0" id="modellocator" editable="false" width="95%" height="95%" contentBackgroundColor="#8EE0AB" text="{cup.modellocatorText}"/>
+		</s:NavigatorContent>-->
+	</mx:ViewStack>
+	<mx:HRule width="100%"/>
+	<mx:ControlBar>
+		<s:Button x="48" y="352" label="重新生成" click="init()"/>
+		<s:Button x="151" y="352" label="保存目录" click="openFloder(event)"/>
+	</mx:ControlBar>
+</s:WindowedApplication>

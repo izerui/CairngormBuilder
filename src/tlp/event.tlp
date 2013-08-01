@@ -1,0 +1,18 @@
+package @_package@.event
+{
+	import com.adobe.cairngorm.control.CairngormEvent;
+	import @_controller@;
+	
+	public class @_classname@Event extends CairngormEvent
+	{
+@_publicvarparamincludetype@
+		public var responseFun:Function;
+		
+		public function @_classname@Event(@_paramincludetype@@_responseFunParam@)
+		{
+			super(@_controllerClass@.@_controllername@);
+@_thisparamincludetype@
+			this.responseFun = responseFun;
+		}
+	}
+}

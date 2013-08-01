@@ -1,0 +1,42 @@
+package @_package@.commond
+{
+	import com.adobe.cairngorm.commands.ICommand;
+	import com.adobe.cairngorm.control.CairngormEvent;
+	import @_package@.business.@_classname@Delegate;
+	import @_package@.event.@_classname@Event;
+	import com.thams.common.util.MessageUtils;
+	import mx.rpc.IResponder;
+	
+	public class @_classname@Commond implements IResponder, ICommand
+	{
+		
+		private var delegate:@_classname@Delegate;
+		
+		private var responseFun:Function;
+		
+		public function @_classname@Commond()
+		{
+			delegate = new @_classname@Delegate(this);
+		}
+		
+		public function result(data:Object):void
+		{
+			if(responseFun){
+				responseFun.call(null,data.result);
+			}
+		}
+		
+		public function fault(info:Object):void
+		{
+			//Alert.show(info.fault.rootCause.message,"提示");//info.toString()
+			MessageUtils.error(info.fault.rootCause.message);
+		}
+		
+		public function execute(event:CairngormEvent):void
+		{
+			var myEvent:@_classname@Event = @_classname@Event(event);
+			responseFun = myEvent.responseFun;
+			delegate.@_function@(@_myeventparam@);
+		}
+	}
+}

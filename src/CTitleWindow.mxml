@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:code="http://code.google.com/p/flexlib/"
+		 title="请填写相关参数" 
+		 creationComplete="init()"
+		 showCloseButton="false">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import vo.CairngormParamVo;
+			[Bindable]
+			public var cup:CairngormParamVo = new CairngormParamVo();
+
+			protected function closewin(event:MouseEvent):void
+			{
+				if(!cup.classname){
+					return;
+				}
+				var fs:FileStream = new FileStream();
+				fs.open(new File(File.applicationDirectory.nativePath+"/temp/history.txt"),FileMode.WRITE);
+				fs.writeUTFBytes(
+					"servicename="+cup.servicename
+					+";"+
+					"package="+cup.packagename
+					+";"+
+					"class="+cup.classname
+					+";"+
+					"function="+cup.functionname
+					+";"+
+					"param="+cup.paramincludetype
+					+";"+
+					"controllername="+cup.controllername
+					+";"+
+					"controller="+cup.controller
+					
+				);
+				fs.close();
+				(this.parentApplication as cairngormBuilder).cup = cup;
+				PopUpManager.removePopUp(this);
+			}
+
+
+			protected function init():void
+			{
+				var fs:FileStream = new FileStream();
+				fs.open(new File(File.applicationDirectory.nativePath+"/temp/history.txt"),FileMode.READ);
+				var s:String = fs.readUTFBytes(fs.bytesAvailable);
+				var _sarr:Array = s.split(";")
+				for(var i:int = 0;i<_sarr.length;i++){
+					var _sf:Array = _sarr[i].toString().split("=");
+					switch(_sf[0]){
+						case "servicename":
+							cup.servicename = _sf[1];
+							break;
+						case "package":
+							cup.packagename = _sf[1];
+							break;
+						case "class":
+							cup.classname = _sf[1];
+							break;
+						case "function":
+							cup.functionname = _sf[1];
+							break;
+						case "param":
+							cup.paramincludetype = _sf[1];
+							break;
+						case "controllername":
+							cup.controllername = _sf[1];
+							break;
+						case "controller":
+							cup.controller = _sf[1];
+							break;
+					}
+				}
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Form >
+		<mx:FormItem label="包名">
+			<code:PromptingTextInput toolTip="例: com.thams.grid 操作包结构" id="packagename" x="71" y="25" prompt="包名..."   width="200" text="@{cup.packagename}"/>
+		</mx:FormItem>
+		<mx:FormItem label="类名">
+			<code:PromptingTextInput toolTip="例: DataList 要生成的操作类名. 最好不要包含 commond,event,model等后缀" x="71" y="56" id="classname" prompt="类名..." width="200" text="@{cup.classname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="方法">
+			<code:PromptingTextInput toolTip="例: getDataList 跟RemoteObject声明的方法最好一致" x="71" y="86" id="functionname" prompt="方法..." width="200" text="@{cup.functionname}"/>
+		</mx:FormItem>
+		<mx:FormItem label="带类型参数">
+			<code:PromptingTextArea toolTip="例: libcode:int,level:int 没有参数请留空" x="71" y="128" id="paramincludetype" prompt="带类型参数..." width="200" text="@{cup.paramincludetype}"/>
+		</mx:FormItem>
+		<mx:HRule width="100%" />
+		<mx:FormItem label="服务名">
+			<code:PromptingTextInput toolTip="例: searchService 为RemoteObject声明的service名字" x="71" y="208" id="servicename" prompt="服务名..." width="200" text="@{cup.servicename}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Controller类路径">
+			<code:PromptingTextInput toolTip="例: com.thams.common.controller.CommonController 包含路径和类名" x="71" y="208" id="controller" prompt="Controller路径..." width="200" text="@{cup.controller}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Controller字串">
+			<code:PromptingTextInput toolTip="例: LOADDATA_FOR_GRID 是你在CommonController中的字串名" x="71" y="208" id="controllername" prompt="Controller字串..." width="200" text="@{cup.controllername}"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar>
+		<s:Button label="完成" click="closewin(event)"/>
+	</mx:ControlBar>
+</mx:TitleWindow>
